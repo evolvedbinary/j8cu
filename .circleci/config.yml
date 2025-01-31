@@ -16,6 +16,11 @@ jobs:
       - run:
           name: Test
           command: mvn test
+      - when:
+          condition:
+            equal: [ "8.0", << parameters.jdk >> ]
+          steps:
+            - run: mvn jacoco:report coveralls:report
 
 workflows:
   build:
