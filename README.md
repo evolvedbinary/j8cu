@@ -86,3 +86,70 @@ ringBuffer.get() => "e"
 ringBuffer.get() => null
 ```
 
+### Listening to RingBuffer Events
+
+It is also possible to add and remove listeners to a RingBuffer. One reason this can be useful would be if you would
+like to get and/or be notified the next *n* entries within some sort of window (e.g. time frame or event space). For example:
+
+```java
+import com.evolvedbinary.j8cu.RingBuffer;
+import org.jspecify.annotations.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+
+final int capacity = 7;
+final boolean orderedReads = true;
+final RingBuffer<String> ringBuffer = new RingBuffer<>(String.class, capacity, orderedReads);
+
+// capture the entries added to the RingBuffer in the next 2 seconds
+final int windowSeconds = 2;
+final TimeWindowListener timeWindowListener = new TimeWindowListener(windowSeconds);
+ringBuffer.addListener(timeWindowListener);
+
+// put entries for the next 2 * 1.5 seconds
+final long end = System.currentTimeMillis() + (windowSeconds * 1_500);
+int i = 0;
+while (System.currentTimeMillis() < end) {
+    final int increment = i++ % 24;
+    ringBuffer.put("" + (char)('a' + increment));
+    Thread.sleep(250); // slow down this is just a demo!
+}
+
+// print out what was captured by the listener
+final List<String> captured = timeWindowListener.getCaptured();
+System.out.println("Added: " + captured.size());
+System.out.println("Captured: " + captured);
+
+
+/**
+ * Simple example listener implementation that captures all `put` entries for a window measured in seconds
+ */
+private static class TimeWindowListener implements RingBuffer.Listener<String> {
+    private final int window;  // seconds
+    private final long start;
+    private final List<String> captured = new ArrayList<>();
+
+    public TimeWindowListener(final int window) {
+        this.window = window;
+        this.start = System.currentTimeMillis();
+    }
+
+    @Override
+    public void retrieved(final @Nullable String entry) {
+    }
+
+    @Override
+    public void stored(final String entry) {
+        final long diff = System.currentTimeMillis() - start;
+        if (diff < ((long) window) * 1_000) {
+            captured.add(entry);
+        }
+    }
+
+    public List<String> getCaptured() {
+        return new ArrayList<>(captured);
+    }
+}
+```
+
