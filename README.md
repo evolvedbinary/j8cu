@@ -1,7 +1,7 @@
 # Java 8 Collection Utilities
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/evolvedbinary/j8cu/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/evolvedbinary/j8cu/tree/main)
-[![Coverage Status](https://coveralls.io/repos/github/evolvedbinary/j8cu/badge.svg?branch=main)](https://coveralls.io/github/evolvedbinary/j8xu?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/evolvedbinary/j8cu/badge.svg?branch=main)](https://coveralls.io/github/evolvedbinary/j8cu?branch=main)
 [![Java 8](https://img.shields.io/badge/java-8-blue.svg)](https://adoptopenjdk.net/)
 [![License](https://img.shields.io/badge/license-BSD%203-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.evolvedbinary.j8cu/j8cu/badge.svg)](https://search.maven.org/search?q=g:com.evolvedbinary.j8xu)
