@@ -87,12 +87,11 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> {
      */
     @Override
     public boolean add(final T element) {
-        if (isFull()) {
-            return false;
+        if (!isFull() && super.add(element)) {
+            this.size++;
+            return true;
         }
-        super.add(element);
-        this.size++;
-        return true;
+        return false;
     }
 
     @Override
