@@ -26,10 +26,12 @@
  */
 package com.evolvedbinary.j8cu.list.linked;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -393,6 +395,188 @@ public class SinglyLinkedListTest {
         assertTrue(iterator.hasNext());
         assertSame(element1, iterator.next());
         assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    public void containsIdentity() {
+        final String element1 = "element1";
+        final String element2 = "element2";
+        final String element3 = "element3";
+
+        // immutable strings
+        final SinglyLinkedList<String> linkedList1 = new SinglyLinkedList<>();
+        assertFalse(linkedList1.containsIdentity(element1));
+        assertFalse(linkedList1.containsIdentity(element2));
+        assertFalse(linkedList1.containsIdentity(element3));
+
+        linkedList1.add(element1);
+        assertTrue(linkedList1.containsIdentity(element1));
+
+        linkedList1.add(element2);
+        assertTrue(linkedList1.containsIdentity(element1));
+        assertTrue(linkedList1.containsIdentity(element2));
+
+        linkedList1.add(element3);
+        assertTrue(linkedList1.containsIdentity(element1));
+        assertTrue(linkedList1.containsIdentity(element2));
+        assertTrue(linkedList1.containsIdentity(element3));
+
+        linkedList1.removeOne(element1);
+        assertFalse(linkedList1.containsIdentity(element1));
+        assertTrue(linkedList1.containsIdentity(element2));
+        assertTrue(linkedList1.containsIdentity(element3));
+
+        linkedList1.removeOne(element2);
+        assertFalse(linkedList1.containsIdentity(element1));
+        assertFalse(linkedList1.containsIdentity(element2));
+        assertTrue(linkedList1.containsIdentity(element3));
+
+        linkedList1.removeOne(element3);
+        assertFalse(linkedList1.containsIdentity(element1));
+        assertFalse(linkedList1.containsIdentity(element2));
+        assertFalse(linkedList1.containsIdentity(element3));
+
+        // wrapped strings
+        final Wrapper<String> wrappedElement1 = new Wrapper<>(element1);
+        final Wrapper<String> wrappedElement2 = new Wrapper<>(element2);
+        final Wrapper<String> wrappedElement3 = new Wrapper<>(element3);
+        final SinglyLinkedList<Wrapper<String>> linkedList2 = new SinglyLinkedList<>();
+        assertFalse(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(wrappedElement2));
+        assertFalse(linkedList2.containsIdentity(wrappedElement3));
+
+        linkedList2.add(wrappedElement1);
+        assertTrue(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element1)));
+
+        linkedList2.add(wrappedElement2);
+        assertTrue(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element1)));
+        assertTrue(linkedList2.containsIdentity(wrappedElement2));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element2)));
+
+        linkedList2.add(wrappedElement3);
+        assertTrue(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element1)));
+        assertTrue(linkedList2.containsIdentity(wrappedElement2));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element2)));
+        assertTrue(linkedList2.containsIdentity(wrappedElement3));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element3)));
+
+        linkedList2.removeOne(wrappedElement1);
+        assertFalse(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element1)));
+        assertTrue(linkedList2.containsIdentity(wrappedElement2));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element2)));
+        assertTrue(linkedList2.containsIdentity(wrappedElement3));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element3)));
+
+        linkedList2.removeOne(wrappedElement2);
+        assertFalse(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element1)));
+        assertFalse(linkedList2.containsIdentity(wrappedElement2));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element2)));
+        assertTrue(linkedList2.containsIdentity(wrappedElement3));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element3)));
+
+        linkedList2.removeOne(wrappedElement3);
+        assertFalse(linkedList2.containsIdentity(wrappedElement1));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element1)));
+        assertFalse(linkedList2.containsIdentity(wrappedElement2));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element2)));
+        assertFalse(linkedList2.containsIdentity(wrappedElement3));
+        assertFalse(linkedList2.containsIdentity(new Wrapper<>(element3)));
+    }
+
+    @Test
+    public void containsEquivalent() {
+        final String element1 = "element1";
+        final String element2 = "element2";
+        final String element3 = "element3";
+
+        // immutable strings
+        final SinglyLinkedList<String> linkedList1 = new SinglyLinkedList<>();
+        assertFalse(linkedList1.containsEquivalent(element1));
+        assertFalse(linkedList1.containsEquivalent(element2));
+        assertFalse(linkedList1.containsEquivalent(element3));
+
+        linkedList1.add(element1);
+        assertTrue(linkedList1.containsEquivalent(element1));
+
+        linkedList1.add(element2);
+        assertTrue(linkedList1.containsEquivalent(element1));
+        assertTrue(linkedList1.containsEquivalent(element2));
+
+        linkedList1.add(element3);
+        assertTrue(linkedList1.containsEquivalent(element1));
+        assertTrue(linkedList1.containsEquivalent(element2));
+        assertTrue(linkedList1.containsEquivalent(element3));
+
+        linkedList1.removeOne(element1);
+        assertFalse(linkedList1.containsEquivalent(element1));
+        assertTrue(linkedList1.containsEquivalent(element2));
+        assertTrue(linkedList1.containsEquivalent(element3));
+
+        linkedList1.removeOne(element2);
+        assertFalse(linkedList1.containsEquivalent(element1));
+        assertFalse(linkedList1.containsEquivalent(element2));
+        assertTrue(linkedList1.containsEquivalent(element3));
+
+        linkedList1.removeOne(element3);
+        assertFalse(linkedList1.containsEquivalent(element1));
+        assertFalse(linkedList1.containsEquivalent(element2));
+        assertFalse(linkedList1.containsEquivalent(element3));
+
+        // wrapped strings
+        final Wrapper<String> wrappedElement1 = new Wrapper<>(element1);
+        final Wrapper<String> wrappedElement2 = new Wrapper<>(element2);
+        final Wrapper<String> wrappedElement3 = new Wrapper<>(element3);
+        final SinglyLinkedList<Wrapper<String>> linkedList2 = new SinglyLinkedList<>();
+        assertFalse(linkedList2.containsEquivalent(wrappedElement1));
+        assertFalse(linkedList2.containsEquivalent(wrappedElement2));
+        assertFalse(linkedList2.containsEquivalent(wrappedElement3));
+
+        linkedList2.add(wrappedElement1);
+        assertTrue(linkedList2.containsEquivalent(wrappedElement1));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element1)));
+
+        linkedList2.add(wrappedElement2);
+        assertTrue(linkedList2.containsEquivalent(wrappedElement1));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element1)));
+        assertTrue(linkedList2.containsEquivalent(wrappedElement2));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element2)));
+
+        linkedList2.add(wrappedElement3);
+        assertTrue(linkedList2.containsEquivalent(wrappedElement1));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element1)));
+        assertTrue(linkedList2.containsEquivalent(wrappedElement2));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element2)));
+        assertTrue(linkedList2.containsEquivalent(wrappedElement3));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element3)));
+
+        linkedList2.removeOne(wrappedElement1);
+        assertFalse(linkedList2.containsEquivalent(wrappedElement1));
+        assertFalse(linkedList2.containsEquivalent(new Wrapper<>(element1)));
+        assertTrue(linkedList2.containsEquivalent(wrappedElement2));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element2)));
+        assertTrue(linkedList2.containsEquivalent(wrappedElement3));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element3)));
+
+        linkedList2.removeOne(wrappedElement2);
+        assertFalse(linkedList2.containsEquivalent(wrappedElement1));
+        assertFalse(linkedList2.containsEquivalent(new Wrapper<>(element1)));
+        assertFalse(linkedList2.containsEquivalent(wrappedElement2));
+        assertFalse(linkedList2.containsEquivalent(new Wrapper<>(element2)));
+        assertTrue(linkedList2.containsEquivalent(wrappedElement3));
+        assertTrue(linkedList2.containsEquivalent(new Wrapper<>(element3)));
+
+        linkedList2.removeOne(wrappedElement3);
+        assertFalse(linkedList2.containsEquivalent(wrappedElement1));
+        assertFalse(linkedList2.containsEquivalent(new Wrapper<>(element1)));
+        assertFalse(linkedList2.containsEquivalent(wrappedElement2));
+        assertFalse(linkedList2.containsEquivalent(new Wrapper<>(element2)));
+        assertFalse(linkedList2.containsEquivalent(wrappedElement3));
+        assertFalse(linkedList2.containsEquivalent(new Wrapper<>(element3)));
     }
 
     @Test
@@ -1580,5 +1764,27 @@ public class SinglyLinkedListTest {
         node2.data = null;
         assertEquals(0, node2.hashCode());
         assertEquals(node1.hashCode(), node2.hashCode());
+    }
+
+    private static class Wrapper<T> {
+        @Nullable final T value;
+
+        public Wrapper(@Nullable final T value) {
+            this.value = value;
+        }
+
+        @Override
+        public final boolean equals(final Object other) {
+            if (!(other instanceof Wrapper)) {
+                return false;
+            }
+            final Wrapper<?> otherWrapper = (Wrapper<?>) other;
+            return Objects.equals(value, otherWrapper.value);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(value);
+        }
     }
 }

@@ -30,6 +30,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Base class for a Linked List.
@@ -143,6 +144,26 @@ public abstract class AbstractLinkedList<T, N extends AbstractNode<T, N>> implem
             return Collections.emptyIterator();
         }
         return new LinkedListIterator<>(head);
+    }
+
+    @Override
+    public boolean containsIdentity(@Nullable T element) {
+        for (final T listElement : this) {
+            if (listElement == element) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean containsEquivalent(@Nullable T element) {
+        for (final T listElement : this) {
+            if (Objects.equals(listElement, element)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

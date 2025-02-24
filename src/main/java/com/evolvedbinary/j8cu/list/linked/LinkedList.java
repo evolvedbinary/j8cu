@@ -71,6 +71,22 @@ public interface LinkedList<T> extends Iterable<T> {
     @Nullable T last();
 
     /**
+     * Returns true if the list contains an element
+     * with the same identity as the provided element
+     *
+     * @return true if the list contains an element with the same identity, false otherwise.
+     */
+    boolean containsIdentity(@Nullable T element);
+
+    /**
+     * Returns true if the list contains an element
+     * with the same equality as the provided element
+     *
+     * @return true if the list contains an element with the same equality, false otherwise.
+     */
+    boolean containsEquivalent(@Nullable T element);
+
+    /**
      * Remove the first matching element from this list,
      * traversal always happens from the start of the list
      * to the end of the list. If you don't care about
