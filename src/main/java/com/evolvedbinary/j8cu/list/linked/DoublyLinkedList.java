@@ -39,7 +39,7 @@ import java.util.Iterator;
 public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<T>> {
 
     @Override
-    public boolean add(final T element) {
+    public boolean add(@Nullable final T element) {
         final DoublyLinkedNode<T> newNode = createNode(element);
         if (head == null) {
             this.head = newNode;

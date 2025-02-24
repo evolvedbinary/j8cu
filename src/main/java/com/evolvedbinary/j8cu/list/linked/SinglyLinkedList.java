@@ -46,7 +46,7 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
     }
 
     @Override
-    public boolean add(final T element) {
+    public boolean add(@Nullable final T element) {
         final SinglyLinkedNode<T> newNode = createNode(element);
         if (head == null) {
             this.head = newNode;

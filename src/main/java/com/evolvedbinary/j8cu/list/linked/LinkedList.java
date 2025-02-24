@@ -50,7 +50,7 @@ public interface LinkedList<T> extends Iterable<T> {
      * @return true if the element was added to this list, false otherwise.
      *         This is here for subclasses to override, this class always returns true!
      */
-    boolean add(final T element);
+    boolean add(@Nullable final T element);
 
     /**
      * Returns the first element from this list.
