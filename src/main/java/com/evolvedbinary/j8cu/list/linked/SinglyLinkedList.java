@@ -37,9 +37,17 @@ import net.jcip.annotations.NotThreadSafe;
 @NotThreadSafe
 public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<T>> {
 
+    public SinglyLinkedList() {
+        super();
+    }
+
+    public SinglyLinkedList(final int nodeCacheSize) {
+        super(nodeCacheSize);
+    }
+
     @Override
     public boolean add(final T element) {
-        final SinglyLinkedNode<T> newNode = new SinglyLinkedNode<>(element);
+        final SinglyLinkedNode<T> newNode = createNode(element);
         if (head == null) {
             this.head = newNode;
         } else {
@@ -48,6 +56,11 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
 
         this.last = newNode;
         return true;
+    }
+
+    @Override
+    SinglyLinkedNode<T> newNode(final T element) {
+        return new SinglyLinkedNode<>(element);
     }
 
     @Override
@@ -83,6 +96,8 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
                     // unlink this `node`
                     prevNode.next = node.next;
                 }
+
+                discardNode(node);
 
                 removed++;
 

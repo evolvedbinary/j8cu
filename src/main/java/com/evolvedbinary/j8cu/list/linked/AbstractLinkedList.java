@@ -45,6 +45,73 @@ public abstract class AbstractLinkedList<T, N extends AbstractNode<T, N>> implem
      */
     @Nullable N last = null;
 
+    /**
+     * Simple cache that holds previously
+     * removed nodes so that they may be reused
+     * when adding new nodes.
+     */
+    @Nullable final AbstractNode<T, N>[] reusableNodesCache;
+    int reusableNodes = 0;
+
+    protected AbstractLinkedList() {
+        // no cache
+        this.reusableNodesCache = null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public AbstractLinkedList(final int nodeCacheSize) {
+        if (nodeCacheSize <= 0) {
+            // no cache
+            this.reusableNodesCache = null;
+        } else {
+            this.reusableNodesCache = (N[]) new AbstractNode[nodeCacheSize];
+        }
+    }
+
+    /**
+     * Create a node for this list.
+     * May create a new node, or reuse a previously removed one from the cache.
+     *
+     * @param element the element to store in the node.
+     *
+     * @return the node for the list.
+     */
+    @SuppressWarnings("unchecked")
+    protected N createNode(final T element) {
+        if (reusableNodesCache != null && reusableNodes > 0) {
+            // get node from cache
+            final N cachedNode = (N) reusableNodesCache[--reusableNodes];
+            reusableNodesCache[reusableNodes] = null;
+            cachedNode.data = element;
+            return cachedNode;
+        }
+
+        return newNode(element);
+    }
+
+    /**
+     * Create a new node object for this list.
+     *
+     * @param element the element to store in the node.
+     *
+     * @return the new node.
+     */
+    abstract N newNode(final T element);
+
+    /**
+     * Discard a node that is no longer used in this list.
+     * May add the node to a cache for later reuse.
+     *
+     * @param node the node that is no longer used in this cache.
+     */
+    protected void discardNode(final N node) {
+        if (reusableNodesCache != null && reusableNodes < reusableNodesCache.length) {
+            node.data = null;
+            node.next = null;
+            reusableNodesCache[reusableNodes++] = node;
+        }
+    }
+
     @Override
     public boolean isEmpty() {
         return head == null;

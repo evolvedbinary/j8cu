@@ -28,6 +28,8 @@ package com.evolvedbinary.j8cu.list.linked;
 
 import org.jspecify.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * Base class for a Node within a Linked List.
  *
@@ -39,5 +41,21 @@ public abstract class AbstractNode<T, N extends AbstractNode<T, N>> implements N
 
     public AbstractNode(@Nullable final T data) {
         this.data = data;
+    }
+
+    @Override
+    public final boolean equals(final Object other) {
+        if (!(other instanceof AbstractNode)) {
+            return false;
+        }
+        final AbstractNode<?, ?> otherNode = (AbstractNode<?, ?>) other;
+        return Objects.equals(next, otherNode.next) && Objects.equals(data, otherNode.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(next);
+        result = 31 * result + Objects.hashCode(data);
+        return result;
     }
 }

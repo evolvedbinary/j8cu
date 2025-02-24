@@ -41,6 +41,16 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DoublyLinkedListTest {
 
     @Test
+    public void newNode() {
+        final DoublyLinkedList<String> linkedList = new DoublyLinkedList<>();
+        final String element1 = "element1";
+        final DoublyLinkedNode<String> node = linkedList.newNode(element1);
+        assertNotNull(node);
+        assertEquals(element1, node.data);
+        assertNull(node.next);
+    }
+
+    @Test
     public void add() {
         final DoublyLinkedList<String> linkedList = new DoublyLinkedList<>();
 

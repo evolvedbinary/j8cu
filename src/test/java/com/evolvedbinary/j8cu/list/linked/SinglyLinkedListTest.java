@@ -41,11 +41,100 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SinglyLinkedListTest {
 
     @Test
-    public void create() {
+    public void newNode() {
         final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        final String element1 = "element1";
+        final SinglyLinkedNode<String> node = linkedList.newNode(element1);
+        assertNotNull(node);
+        assertEquals(element1, node.data);
+        assertNull(node.next);
+    }
+
+    @Test
+    public void create() {
+        SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
         assertNull(linkedList.head);
         assertNull(linkedList.last);
         assertTrue(linkedList.isEmpty());
+
+        linkedList = new SinglyLinkedList<>(-1);
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        linkedList = new SinglyLinkedList<>(0);
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        final int nodeCacheSize = 10;
+        linkedList = new SinglyLinkedList<>(10);
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertNotNull(linkedList.reusableNodesCache);
+        assertEquals(nodeCacheSize, linkedList.reusableNodesCache.length);
+        assertEquals(0, linkedList.reusableNodes);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void reuseNodes() {
+        final int nodeCacheSize = 2;
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>(nodeCacheSize);
+
+        final SinglyLinkedNode<String>[] expectedArray = (SinglyLinkedNode<String>[]) new SinglyLinkedNode[nodeCacheSize];
+
+        final String element1 = "element1";
+        linkedList.add(element1);
+        assertEquals(0, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        final String element2 = "element2";
+        linkedList.add(element2);
+        assertEquals(0, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        final String element3 = "element3";
+        linkedList.add(element3);
+        assertEquals(0, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        expectedArray[0] = new SinglyLinkedNode<>(null);
+        linkedList.removeFirst(element2);
+        assertEquals(1, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        expectedArray[1] = new SinglyLinkedNode<>(null);
+        linkedList.removeFirst(element1);
+        assertEquals(2, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        linkedList.removeFirst(element3);
+        assertEquals(2, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        expectedArray[1] = null;
+        final String element4 = "element4";
+        linkedList.add(element4);
+        assertEquals(1, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        expectedArray[0] = null;
+        final String element5 = "element5";
+        linkedList.add(element5);
+        assertEquals(0, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        final String element6 = "element6";
+        linkedList.add(element6);
+        assertEquals(0, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
+
+        expectedArray[0] = new SinglyLinkedNode<>(null);
+        linkedList.removeFirst(element6);
+        assertEquals(1, linkedList.reusableNodes);
+        assertArrayEquals(expectedArray, linkedList.reusableNodesCache);
     }
 
     @Test
@@ -1072,7 +1161,7 @@ public class SinglyLinkedListTest {
     }
 
     @Test
-    public void string() {
+    public void testToString() {
         final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
         linkedList.add("1");
         linkedList.add("2");
@@ -1081,5 +1170,43 @@ public class SinglyLinkedListTest {
         linkedList.add("3");
         linkedList.add("a");
         assertEquals("[1, 2, 1, b, 3, a]", linkedList.toString());
+    }
+
+    @Test
+    public void testEquals() {
+        final String element1 = "element1";
+        final String element2 = "element2";
+        final SinglyLinkedNode<String> node1 = new SinglyLinkedNode<>(element1);
+        final SinglyLinkedNode<String> node2 = new SinglyLinkedNode<>(element2);
+
+        assertFalse(node1.equals(null));
+        assertFalse(node1.equals(new Object()));
+        assertTrue(node1.equals(node1));
+        assertFalse(node1.equals(node2));
+        node2.data = element1;
+        assertTrue(node1.equals(node2));
+
+        node1.next = node2;
+        assertFalse(node1.equals(node2));
+    }
+
+    @Test
+    public void testHashCode() {
+        final String element1 = "element1";
+        final String element2 = "element2";
+        final SinglyLinkedNode<String> node1 = new SinglyLinkedNode<>(element1);
+        final SinglyLinkedNode<String> node2 = new SinglyLinkedNode<>(element2);
+
+        assertNotEquals(0, node1.hashCode());
+        assertNotEquals(node1.hashCode(), node2.hashCode());
+
+        node2.data = element1;
+        assertEquals(node1.hashCode(), node2.hashCode());
+
+        node1.data = null;
+        assertEquals(0, node1.hashCode());
+        node2.data = null;
+        assertEquals(0, node2.hashCode());
+        assertEquals(node1.hashCode(), node2.hashCode());
     }
 }

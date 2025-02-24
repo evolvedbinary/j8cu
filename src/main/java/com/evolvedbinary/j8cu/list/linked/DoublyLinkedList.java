@@ -40,7 +40,7 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
 
     @Override
     public boolean add(final T element) {
-        final DoublyLinkedNode<T> newNode = new DoublyLinkedNode<>(element);
+        final DoublyLinkedNode<T> newNode = createNode(element);
         if (head == null) {
             this.head = newNode;
         } else {
@@ -52,6 +52,16 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
         return true;
     }
 
+    @Override
+    DoublyLinkedNode<T> newNode(final T element) {
+        return new DoublyLinkedNode<>(element);
+    }
+
+    /**
+     * Return an iterator that progresses over this list in reverse order (i.e. from end to start).
+     *
+     * @return an iterator that moves in a reverse direction over this list.
+     */
     public Iterator<T> reverseIterator() {
         if (last == null) {
             // is empty
@@ -103,6 +113,7 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
                 }
 
                 removed++;
+                discardNode(node);
 
                 if (firstOnly) {
                     break;
