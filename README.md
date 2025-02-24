@@ -19,7 +19,7 @@ You can add the library to your project as a dependency with the following Maven
 <dependency>
     <groupId>com.evolvedbinary.j8cu</groupId>
     <artifactId>j8cu</artifactId>
-    <version>1.0.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
