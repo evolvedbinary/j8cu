@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.evolvedbinary.j8cu;
+package com.evolvedbinary.j8cu.buffer.ring;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -36,8 +36,8 @@ import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
-import static com.evolvedbinary.j8cu.RingBuffer.READ_UNINITIALISED;
-import static com.evolvedbinary.j8cu.RingBuffer.WRITE_UNINITIALISED;
+import static com.evolvedbinary.j8cu.buffer.ring.RingBuffer.READ_UNINITIALISED;
+import static com.evolvedbinary.j8cu.buffer.ring.RingBuffer.WRITE_UNINITIALISED;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 

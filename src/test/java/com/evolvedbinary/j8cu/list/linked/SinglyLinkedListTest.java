@@ -1,0 +1,1085 @@
+/*
+ * Copyright © 2025, Evolved Binary Ltd. <tech@evolvedbinary.com>
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of the <organization> nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package com.evolvedbinary.j8cu.list.linked;
+
+import org.junit.jupiter.api.Test;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Tests for {@link SinglyLinkedList}.
+ *
+ * @author <a href="mailto:adam@evolvedbinary.com">Adam Retter</a>
+ */
+public class SinglyLinkedListTest {
+
+    @Test
+    public void create() {
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+    }
+
+    @Test
+    public void add() {
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+
+        // add a first string
+        final String str1 = "hello";
+        linkedList.add(str1);
+        assertFalse(linkedList.isEmpty());
+        assertNotNull(linkedList.head);
+        assertSame(str1, linkedList.head.data);
+        assertNull(linkedList.head.next);
+        assertNotNull(linkedList.last);
+        assertSame(linkedList.head, linkedList.last);
+        assertSame(str1, linkedList.last.data);
+
+        // add a second string
+        final String str2 = "to";
+        linkedList.add(str2);
+        assertFalse(linkedList.isEmpty());
+        assertNotNull(linkedList.head);
+        assertSame(str1, linkedList.head.data);
+        assertNotNull(linkedList.head.next);
+        assertSame(str2, linkedList.head.next.data);
+        assertNotNull(linkedList.last);
+        assertNotSame(linkedList.head, linkedList.last);
+        assertSame(str2, linkedList.last.data);
+        assertNull(linkedList.last.next);
+
+        // add a third string
+        final String str3 = "you";
+        linkedList.add(str3);
+        assertFalse(linkedList.isEmpty());
+        assertNotNull(linkedList.head);
+        assertSame(str1, linkedList.head.data);
+        assertNotNull(linkedList.head.next);
+        assertSame(str2, linkedList.head.next.data);
+        assertNotNull(linkedList.head.next.next);
+        assertSame(str3, linkedList.head.next.next.data);
+        assertNotNull(linkedList.last);
+        assertNotSame(linkedList.head, linkedList.last);
+        assertSame(str3, linkedList.last.data);
+        assertNull(linkedList.last.next);
+    }
+
+    @Test
+    public void head() {
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        assertThrows(IllegalStateException.class, linkedList::head);
+
+        final String str1 = "hello";
+        linkedList.add(str1);
+        assertEquals(str1, linkedList.head());
+
+        final String str2 = "world";
+        linkedList.add(str2);
+        assertEquals(str1, linkedList.head());
+    }
+
+    @Test
+    public void last() {
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        assertThrows(IllegalStateException.class, linkedList::last);
+
+        final String str1 = "hello";
+        linkedList.add(str1);
+        assertEquals(str1, linkedList.last());
+
+        final String str2 = "world";
+        linkedList.add(str2);
+        assertEquals(str2, linkedList.last());
+    }
+
+    @Test
+    public void iterator() {
+        // empty list
+        SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        Iterator<String> iterator = linkedList.iterator();
+        assertThrows(IllegalStateException.class, iterator::remove);
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with one element
+        final String element1 = "element1";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with two elements the same
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with three elements the same
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with four elements the same
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with two different elements
+        final String element2 = "element2";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element2, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with three different elements
+        final String element3 = "element3";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element3, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with four different elements
+        final String element4 = "element4";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        linkedList.add(element4);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element3, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element4, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list where the head node has subsequently been removed
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        linkedList.add(element4);
+        linkedList.removeFirst(element1);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element3, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element4, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list where the last node has subsequently been removed
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        linkedList.add(element4);
+        linkedList.removeFirst(element4);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element2, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element3, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list where various nodes have been removed
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element3);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        linkedList.add(element1);
+        linkedList.add(element3);
+        linkedList.add(element3);
+        linkedList.add(element3);
+        linkedList.add(element3);
+        linkedList.add(element4);
+        linkedList.add(element1);
+        linkedList.add(element3);
+        assertEquals(7, linkedList.removeAll(element3));
+        assertTrue(linkedList.removeFirst(element1));
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element2, iterator.next());
+        assertSame(element1, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element4, iterator.next());
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    public void removeFirst() {
+
+        // empty list
+        SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        final String noSuchElement = "no-such-element";
+        assertFalse(linkedList.removeFirst(noSuchElement));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with one element
+        linkedList = new SinglyLinkedList<>();
+        final String element1 = "element1";
+        linkedList.add(element1);
+        assertFalse(linkedList.removeFirst(noSuchElement));
+        assertTrue(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with two elements the same, remove just the first of the two
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with two elements the same, remove both
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with two different elements, remove just the first of the two
+        final String element2 = "element2";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with two different elements, remove just the second of the two
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with two different elements, remove both (first then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with two different elements, remove both (second then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three elements the same, remove just the first of the three
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three elements the same, remove all
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove just the first of the three
+        final String element3 = "element3";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove just the second of the three
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove just the third of the three
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (first then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (second then third)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (first then third)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (third then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (third then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove all (first, second, then third)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (second, third, then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (third, first, then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (third, second, then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertTrue(linkedList.removeFirst(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertTrue(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertFalse(linkedList.removeFirst(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertFalse(linkedList.removeFirst(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+    }
+
+    @Test
+    public void removeAll() {
+
+        // empty list
+        SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        final String noSuchElement = "no-such-element";
+        assertEquals(0, linkedList.removeAll(noSuchElement));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with one element
+        linkedList = new SinglyLinkedList<>();
+        final String element1 = "element1";
+        linkedList.add(element1);
+        assertEquals(0, linkedList.removeAll(noSuchElement));
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with two elements the same, remove both
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertEquals(2, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with two different elements, remove just the first of the two
+        final String element2 = "element2";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with two different elements, remove just the second of the two
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with two different elements, remove both (first then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with two different elements, remove both (second then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three elements the same, remove all
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertEquals(3, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove just the first of the three
+        final String element3 = "element3";
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove just the second of the three
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove just the third of the three
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (first then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (second then third)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (first then third)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (third then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove two (third then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+
+        // list with three different elements, remove all (first, second, then third)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (second, third, then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (third, first, then second)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (third, second, then first)
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(1, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(1, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        // try and remove again
+        assertEquals(0, linkedList.removeAll(element3));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element1));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        // list with variety of elements
+        linkedList = new SinglyLinkedList<>();
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        linkedList.add(element1);
+        linkedList.add(element3);
+        linkedList.add(element3);
+        linkedList.add(element3);
+        linkedList.add(element3);
+        linkedList.add(element1);
+        assertEquals(5, linkedList.removeAll(element3));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element3));
+        assertEquals(4, linkedList.removeAll(element1));
+        assertNotNull(linkedList.head);
+        assertNotNull(linkedList.last);
+        assertFalse(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element1));
+        assertEquals(1, linkedList.removeAll(element2));
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+        assertEquals(0, linkedList.removeAll(element2));
+    }
+
+    @Test
+    public void clear() {
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+
+        linkedList.add("hello");
+        linkedList.clear();
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+
+        linkedList.add("hello");
+        linkedList.add("world");
+        linkedList.clear();
+        assertNull(linkedList.head);
+        assertNull(linkedList.last);
+        assertTrue(linkedList.isEmpty());
+    }
+
+    @Test
+    public void string() {
+        final SinglyLinkedList<String> linkedList = new SinglyLinkedList<>();
+        linkedList.add("1");
+        linkedList.add("2");
+        linkedList.add("1");
+        linkedList.add("b");
+        linkedList.add("3");
+        linkedList.add("a");
+        assertEquals("[1, 2, 1, b, 3, a]", linkedList.toString());
+    }
+}

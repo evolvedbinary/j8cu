@@ -8,7 +8,10 @@
 
 Some extra Collection classes targetting Java 8.
 
-The main thing here at the moment is a [RingBuffer](src/main/java/com/evolvedbinary/j8cu/RingBuffer.java) implementation.
+The main things here at the moment are:
+
+1. A [RingBuffer](src/main/java/com/evolvedbinary/j8cu/buffer/ring/RingBuffer.java) implementation.
+2. A variety of [Linked List](src/main/java/com/evolvedbinary/j8cu/list/linked/) implementations.
 
 ## Maven Dependency
 You can add the library to your project as a dependency with the following Maven coordinates:
@@ -21,7 +24,7 @@ You can add the library to your project as a dependency with the following Maven
 ```
 
 ## Ring Buffer
-Implementation of a [RingBuffer](src/main/java/com/evolvedbinary/j8cu/RingBuffer.java) (e.g. https://en.wikipedia.org/wiki/Circular_buffer) in Java 8.
+Implementation of a [RingBuffer](src/main/java/com/evolvedbinary/j8cu/buffer/ring/RingBuffer.java) (e.g. https://en.wikipedia.org/wiki/Circular_buffer) in Java 8.
 This implementation supports two modes of operations for reading from the buffer:
     
     1. Unordered (the default)
@@ -42,8 +45,8 @@ The RingBuffer also provides several additional features:
 ### Unordered Ring Buffer Example
 
 ```java
-import com.evolvedbinary.j8cu.RingBuffer;
-    
+import com.evolvedbinary.j8cu.buffer.ring.RingBuffer;
+
 final int capacity = 3;
 final RingBuffer<String> ringBuffer = new RingBuffer<>(String.class, capacity);
 
@@ -65,8 +68,8 @@ ringBuffer.get() => null
 ### Ordered Ring Buffer Example
 
 ```java
-import com.evolvedbinary.j8cu.RingBuffer;
-    
+import com.evolvedbinary.j8cu.buffer.ring.RingBuffer;
+
 final int capacity = 3;
 final boolean orderedReads = true;
 final RingBuffer<String> ringBuffer = new RingBuffer<>(String.class, capacity, orderedReads);
@@ -92,8 +95,9 @@ It is also possible to add and remove listeners to a RingBuffer. One reason this
 like to get and/or be notified the next *n* entries within some sort of window (e.g. time frame or event space). For example:
 
 ```java
-import com.evolvedbinary.j8cu.RingBuffer;
+import com.evolvedbinary.j8cu.buffer.ring.RingBuffer;
 import org.jspecify.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 

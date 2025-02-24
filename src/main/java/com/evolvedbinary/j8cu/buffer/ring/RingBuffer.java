@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.evolvedbinary.j8cu;
+package com.evolvedbinary.j8cu.buffer.ring;
 
 import net.jcip.annotations.NotThreadSafe;
 import org.jspecify.annotations.NonNull;
