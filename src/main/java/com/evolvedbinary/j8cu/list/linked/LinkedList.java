@@ -71,13 +71,28 @@ public interface LinkedList<T> extends Iterable<T> {
     @Nullable T last();
 
     /**
-     * Remove the first matching element from this list.
+     * Remove the first matching element from this list,
+     * traversal always happens from the start of the list
+     * to the end of the list. If you don't care about
+     * traversal order then {@link #removeOne(Object)}
+     * may be more efficient.
      *
      * @param element the element to remove from this list.
      *
      * @return true if the element was removed from this list, false otherwise.
      */
     boolean removeFirst(@Nullable T element);
+
+    /**
+     * Remove ant one matching element from this list,
+     * if the list contains duplicates, any one of them
+     * may be removed.
+     *
+     * @param element the element to remove from this list.
+     *
+     * @return true if the element was removed from this list, false otherwise.
+     */
+    boolean removeOne(@Nullable T element);
 
     /**
      * Remove all matching elements from this List.

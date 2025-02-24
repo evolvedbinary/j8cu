@@ -71,7 +71,22 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
     }
 
     @Override
-    protected long remove(@Nullable T element, boolean firstOnly) {
+    protected long remove(@Nullable final T element, final RemovalMode removalMode) {
+        if (RemovalMode.REMOVE_ONE == removalMode && last != null && last.data == element) {
+            // optimisation for removing the `last` node when removing any one node
+            DoublyLinkedNode<T> node = last;
+            if (last == head) {
+                // there was only one node
+                head = null;
+                last = null;
+            } else {
+                last = last.previous;
+                last.next = null;
+            }
+            discardNode(node);
+            return 1;
+        }
+
         long removed = 0;
 
         @Nullable DoublyLinkedNode<T> node = head;
@@ -115,7 +130,8 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
                 removed++;
                 discardNode(node);
 
-                if (firstOnly) {
+                if (RemovalMode.REMOVE_ALL != removalMode) {
+                    // REMOVE_FIRST or REMOVE_ONE so we just need one result
                     break;
                 }
 

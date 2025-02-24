@@ -64,7 +64,7 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
     }
 
     @Override
-    protected long remove(@Nullable final T element, final boolean firstOnly) {
+    protected long remove(@Nullable final T element, final RemovalMode removalMode) {
         long removed = 0;
 
         @Nullable SinglyLinkedNode<T> node = head;
@@ -101,7 +101,8 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
 
                 removed++;
 
-                if (firstOnly) {
+                if (RemovalMode.REMOVE_ALL != removalMode) {
+                    // REMOVE_FIRST or REMOVE_ONE so we just need one result
                     break;
                 }
 

@@ -144,15 +144,37 @@ public abstract class AbstractLinkedList<T, N extends AbstractNode<T, N>> implem
 
     @Override
     public boolean removeFirst(@Nullable final T element) {
-        return remove(element, true) == 1;
+        return remove(element, RemovalMode.REMOVE_FIRST) == 1;
+    }
+
+    @Override
+    public boolean removeOne(@Nullable final T element) {
+        return remove(element, RemovalMode.REMOVE_ONE) == 1;
     }
 
     @Override
     public long removeAll(@Nullable final T element) {
-        return remove(element, false);
+        return remove(element, RemovalMode.REMOVE_ALL);
     }
 
-    protected abstract long remove(@Nullable final T element, final boolean firstOnly);
+    protected enum RemovalMode {
+        /**
+         * Remove the first matching element.
+         */
+        REMOVE_FIRST,
+
+        /**
+         * Remove any one matching element.
+         */
+        REMOVE_ONE,
+
+        /**
+         * Remove all matching elements
+         */
+        REMOVE_ALL
+    }
+
+    protected abstract long remove(@Nullable final T element, final RemovalMode removalMode);
 
     @Override
     public void clear() {

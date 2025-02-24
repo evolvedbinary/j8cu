@@ -399,6 +399,287 @@ public class BoundedSinglyLinkedListTest {
     }
 
     @Test
+    public void removeOne() {
+        final int maximumSize = 5;
+
+        // empty list
+        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        assertEquals(0, linkedList.size());
+        final String noSuchElement = "no-such-element";
+        assertFalse(linkedList.removeOne(noSuchElement));
+        assertEquals(0, linkedList.size());
+
+        // list with one element
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        final String element1 = "element1";
+        linkedList.add(element1);
+        assertEquals(1, linkedList.size());
+        assertFalse(linkedList.removeOne(noSuchElement));
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+
+        // list with two elements the same, remove just the first of the two
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+
+        // list with two elements the same, remove both
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+
+        // list with two different elements, remove just the first of the two
+        final String element2 = "element2";
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+
+        // list with two different elements, remove just the second of the two
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(1, linkedList.size());
+
+        // list with two different elements, remove both (first then second)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+
+        // list with two different elements, remove both (second then first)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+
+        // list with three elements the same, remove just the first of the three
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(2, linkedList.size());
+
+        // list with three elements the same, remove all
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        linkedList.add(element1);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+
+        // list with three different elements, remove just the first of the three
+        final String element3 = "element3";
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(2, linkedList.size());
+
+        // list with three different elements, remove just the second of the three
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(2, linkedList.size());
+
+        // list with three different elements, remove just the third of the three
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(2, linkedList.size());
+
+        // list with three different elements, remove two (first then second)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(1, linkedList.size());
+
+        // list with three different elements, remove two (second then third)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(1, linkedList.size());
+
+        // list with three different elements, remove two (first then third)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(1, linkedList.size());
+
+        // list with three different elements, remove two (third then second)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(1, linkedList.size());
+
+        // list with three different elements, remove two (third then first)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+
+        // list with three different elements, remove all (first, second, then third)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element3));
+        assertEquals(0, linkedList.size());
+        assertTrue(linkedList.isEmpty());
+
+        // list with three different elements, remove all (second, third, then first)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element3));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+
+        // list with three different elements, remove all (third, first, then second)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element3));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+
+        // list with three different elements, remove all (third, second, then first)
+        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList.add(element1);
+        linkedList.add(element2);
+        linkedList.add(element3);
+        assertEquals(3, linkedList.size());
+        assertTrue(linkedList.removeOne(element3));
+        assertEquals(2, linkedList.size());
+        assertTrue(linkedList.removeOne(element2));
+        assertEquals(1, linkedList.size());
+        assertTrue(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+        // try and remove again
+        assertFalse(linkedList.removeOne(element3));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element2));
+        assertEquals(0, linkedList.size());
+        assertFalse(linkedList.removeOne(element1));
+        assertEquals(0, linkedList.size());
+    }
+
+    @Test
     public void removeAll() {
         final int maximumSize = 10;
 

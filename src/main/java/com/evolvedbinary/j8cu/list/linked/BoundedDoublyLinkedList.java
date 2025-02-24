@@ -104,6 +104,15 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> {
     }
 
     @Override
+    public boolean removeOne(final @Nullable T element) {
+        if (super.removeOne(element)) {
+            this.size--;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public long removeAll(final @Nullable T element) {
         final long removed = super.removeAll(element);
         this.size -= removed;
