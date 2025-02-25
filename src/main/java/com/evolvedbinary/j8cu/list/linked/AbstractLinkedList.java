@@ -109,9 +109,9 @@ public abstract class AbstractLinkedList<T, N extends AbstractNode<T, N>> implem
      * @param node the node that is no longer used in this cache.
      */
     protected void discardNode(final N node) {
+        node.next = null;
+        node.data = null;
         if (reusableNodesCache != null && reusableNodes < reusableNodesCache.length) {
-            node.data = null;
-            node.next = null;
             reusableNodesCache[reusableNodes++] = node;
         }
     }

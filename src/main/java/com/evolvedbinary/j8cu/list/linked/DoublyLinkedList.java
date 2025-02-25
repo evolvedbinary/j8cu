@@ -68,6 +68,12 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
         return new DoublyLinkedNode<>(element);
     }
 
+    @Override
+    protected void discardNode(final DoublyLinkedNode<T> node) {
+        node.previous = null;
+        super.discardNode(node);
+    }
+
     /**
      * Return an iterator that progresses over this list in reverse order (i.e. from end to start).
      *
@@ -102,6 +108,7 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
 
         @Nullable DoublyLinkedNode<T> node = head;
         @Nullable DoublyLinkedNode<T> prevNode = null;
+        @Nullable DoublyLinkedNode<T> nextNode = null;
         while (node != null) {
 
             if (element == node.data) {
@@ -116,11 +123,11 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
                     }
 
                     // move the current node to the `head` node
-                    final DoublyLinkedNode<T> next = node.next;
-                    if (next != null) {
-                        next.previous = null;
+                    nextNode = node.next;
+                    if (nextNode != null) {
+                        nextNode.previous = null;
                     }
-                    head = next;
+                    head = nextNode;
 
                 } else {
                     // element matched a non-head node
@@ -131,11 +138,11 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
                     }
 
                     // unlink this `node`
-                    final DoublyLinkedNode<T> next = node.next;
-                    if (next != null) {
-                        next.previous = prevNode;
+                    nextNode = node.next;
+                    if (nextNode != null) {
+                        nextNode.previous = prevNode;
                     }
-                    prevNode.next  = next;
+                    prevNode.next  = nextNode;
                 }
 
                 discardNode(node);
@@ -150,12 +157,13 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
                 }
 
             } else {
-                // store the node as the previous node for the next iteration
+                // store the node as the previous node in preparation for the next iteration of this loop...
                 prevNode = node;
+                nextNode = node.next;
             }
 
-            // prepare for next iteration...
-            node = node.next;
+            // move to the next node in preparation for the next iteration of this loop...
+            node = nextNode;
         }
 
         return removed;

@@ -72,6 +72,7 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
 
         @Nullable SinglyLinkedNode<T> node = head;
         @Nullable SinglyLinkedNode<T> prevNode = null;
+        @Nullable SinglyLinkedNode<T> nextNode = null;
         while (node != null) {
 
             if (element == node.data) {
@@ -100,11 +101,12 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
                     prevNode.next = node.next;
                 }
 
-                discardNode(node);
-
                 if (removed < Long.MAX_VALUE) {
                     removed++;
                 }
+
+                nextNode = node.next;
+                discardNode(node);
 
                 if (RemovalMode.REMOVE_ALL != removalMode) {
                     // REMOVE_FIRST or REMOVE_ONE so we just need one result
@@ -112,12 +114,13 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
                 }
 
             } else {
-                // store the node as the previous node for the next iteration
+                // store the node as the previous node in preparation for the next iteration of this loop...
                 prevNode = node;
+                nextNode = node.next;
             }
 
-            // prepare for next iteration...
-            node = node.next;
+            // move to the next node in preparation for the next iteration of this loop...
+            node = nextNode;
         }
 
         return removed;
