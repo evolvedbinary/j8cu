@@ -36,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  * @author <a href="mailto:adam@evolvedbinary.com">Adam Retter</a>
  */
 @NotThreadSafe
-public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> {
+public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> implements BoundedLinkedList<T> {
 
     /**
      * An upper bound on the size of the Linked List.
@@ -68,20 +68,12 @@ public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> {
         this.maximumSize = maximumSize;
     }
 
-    /**
-     * Determine if the linked list is full.
-     *
-     * @return true if the list is full, false otherwise.
-     */
+    @Override
     public boolean isFull() {
         return size == maximumSize;
     }
 
-    /**
-     * Get the size of the linked list.
-     *
-     * @return the size of the linked list.
-     */
+    @Override
     public long size() {
         return size;
     }

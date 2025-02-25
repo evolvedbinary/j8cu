@@ -36,7 +36,9 @@ import org.jspecify.annotations.Nullable;
  * @author <a href="mailto:adam@evolvedbinary.com">Adam Retter</a>
  */
 @NotThreadSafe
-public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> {
+public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> implements BoundedLinkedList<T> {
+
+    // TODO(AR) could perhaps be optimised to use its `size` to perform a binary search when removing elements or checking for contains elements, furthermore if we had an OrderedBoundedDoublyLinkedList we could use a binary search for finding the insertion position when adding elements too!
 
     /**
      * An upper bound on the size of the Linked List.
@@ -68,20 +70,12 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> {
         this.maximumSize = maximumSize;
     }
 
-    /**
-     * Determine if the linked list is full.
-     *
-     * @return true if the list is full, false otherwise.
-     */
+    @Override
     public boolean isFull() {
         return size == maximumSize;
     }
 
-    /**
-     * Get the size of the linked list.
-     *
-     * @return the size of the linked list.
-     */
+    @Override
     public long size() {
         return size;
     }
