@@ -29,6 +29,9 @@ package com.evolvedbinary.j8cu.list.linked;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static com.evolvedbinary.j8cu.list.linked.Bounded.bound;
 import static com.evolvedbinary.j8cu.list.linked.LinkedListTestUtil.newList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -121,6 +124,98 @@ public class BoundedDoublyLinkedListTest {
         // try and add more past the maximumSize
         assertFalse(linkedList.add(element1));
         assertEquals(3, linkedList.size());
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void head(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        assertThrows(IllegalStateException.class, linkedList::head);
+
+        final String str1 = "hello";
+        linkedList.add(str1);
+        assertEquals(str1, linkedList.head());
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void last(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        assertThrows(IllegalStateException.class, linkedList::last);
+
+        final String str1 = "hello";
+        linkedList.add(str1);
+        assertEquals(str1, linkedList.last());
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void iterator(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        // empty list
+        BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        Iterator<String> iterator = linkedList.iterator();
+        assertThrows(IllegalStateException.class, iterator::remove);
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with one element
+        final String element1 = "element1";
+        linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        linkedList.add(element1);
+        iterator = linkedList.iterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void reverseIterator(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        // empty list
+        BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        Iterator<String> iterator = linkedList.reverseIterator();
+        assertThrows(IllegalStateException.class, iterator::remove);
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+
+        // list with one element
+        final String element1 = "element1";
+        linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        linkedList.add(element1);
+        iterator = linkedList.reverseIterator();
+        assertThrows(UnsupportedOperationException.class, iterator::remove);
+        assertTrue(iterator.hasNext());
+        assertSame(element1, iterator.next());
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void containsIdentity(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final String element1 = "element1";
+
+        // immutable strings
+        final BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        assertFalse(linkedList.containsIdentity(element1));
+
+        linkedList.add(element1);
+        assertTrue(linkedList.containsIdentity(element1));
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void containsEquivalent(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final String element1 = "element1";
+
+        // immutable strings
+        final BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), 1);
+        assertFalse(linkedList.containsEquivalent(element1));
+
+        linkedList.add(element1);
+        assertTrue(linkedList.containsEquivalent(element1));
     }
 
     @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
@@ -1012,5 +1107,25 @@ public class BoundedDoublyLinkedListTest {
         assertEquals(2, linkedList.size());
         linkedList.clear();
         assertEquals(0, linkedList.size());
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void testToString(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final int maximumSize = 2;
+        final BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
+        linkedList.add("1");
+        linkedList.add("2");
+        assertEquals("[1, 2]", linkedList.toString());
+    }
+
+    @ValueSource(classes = {DoublyLinkedList.class, OrderedDoublyLinkedList.class})
+    @ParameterizedTest
+    public void testToReverseString(final Class<? extends DoublyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final int maximumSize = 2;
+        final BoundedDoublyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
+        linkedList.add("1");
+        linkedList.add("2");
+        assertEquals("[2, 1]", linkedList.toReverseString());
     }
 }

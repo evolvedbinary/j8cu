@@ -31,7 +31,7 @@ package com.evolvedbinary.j8cu.list.linked;
  *
  * @author <a href="mailto:adam@evolvedbinary.com">Adam Retter</a>
  */
-public class Bounded {
+public interface Bounded {
 
     /**
      * Wraps a singly linked list with an upper bound on its size.
