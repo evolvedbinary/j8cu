@@ -55,9 +55,12 @@ public abstract class AbstractLinkedList<T, N extends AbstractNode<T, N>> implem
 
     protected AbstractLinkedList() {
         // no cache
-        this.reusableNodesCache = null;
+        this(0);
     }
 
+    /**
+     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
+     */
     @SuppressWarnings("unchecked")
     public AbstractLinkedList(final int nodeCacheSize) {
         if (nodeCacheSize <= 0) {

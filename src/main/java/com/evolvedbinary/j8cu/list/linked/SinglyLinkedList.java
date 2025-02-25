@@ -41,6 +41,9 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
         super();
     }
 
+    /**
+     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
+     */
     public SinglyLinkedList(final int nodeCacheSize) {
         super(nodeCacheSize);
     }

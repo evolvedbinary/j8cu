@@ -53,6 +53,15 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> {
      * @param maximumSize sets an upper bound on the size of the Linked List.
      */
     public BoundedDoublyLinkedList(final long maximumSize) {
+        this(maximumSize, 0);
+    }
+
+    /**
+     * @param maximumSize sets an upper bound on the size of the Linked List.
+     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
+     */
+    public BoundedDoublyLinkedList(final long maximumSize, final int nodeCacheSize) {
+        super(nodeCacheSize);
         if (maximumSize < 1) {
             throw new IllegalArgumentException("maximumSize must be a greater than 0");
         }

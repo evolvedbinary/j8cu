@@ -38,6 +38,17 @@ import java.util.Iterator;
  */
 public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<T>> {
 
+    public DoublyLinkedList() {
+        super();
+    }
+
+    /**
+     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
+     */
+    public DoublyLinkedList(final int nodeCacheSize) {
+        super(nodeCacheSize);
+    }
+
     @Override
     public boolean add(@Nullable final T element) {
         final DoublyLinkedNode<T> newNode = createNode(element);

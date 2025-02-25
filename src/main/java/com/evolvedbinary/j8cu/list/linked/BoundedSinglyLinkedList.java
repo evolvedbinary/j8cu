@@ -53,6 +53,15 @@ public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> {
      * @param maximumSize sets an upper bound on the size of the Linked List.
      */
     public BoundedSinglyLinkedList(final long maximumSize) {
+        this(maximumSize, 0);
+    }
+
+    /**
+     * @param maximumSize sets an upper bound on the size of the Linked List.
+     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
+     */
+    public BoundedSinglyLinkedList(final long maximumSize, final int nodeCacheSize) {
+        super(nodeCacheSize);
         if (maximumSize < 1) {
             throw new IllegalArgumentException("maximumSize must be a greater than 0");
         }
