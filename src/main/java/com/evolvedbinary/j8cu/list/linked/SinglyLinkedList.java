@@ -102,7 +102,9 @@ public class SinglyLinkedList<T> extends AbstractLinkedList<T, SinglyLinkedNode<
 
                 discardNode(node);
 
-                removed++;
+                if (removed < Long.MAX_VALUE) {
+                    removed++;
+                }
 
                 if (RemovalMode.REMOVE_ALL != removalMode) {
                     // REMOVE_FIRST or REMOVE_ONE so we just need one result
