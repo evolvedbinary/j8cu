@@ -160,4 +160,22 @@ public class DoublyLinkedList<T> extends AbstractLinkedList<T, DoublyLinkedNode<
 
         return removed;
     }
+
+    /**
+     * Similar to {@link AbstractLinkedList#toString()}
+     * but prints out the elements in reverse order.
+     */
+    public String toReverseString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append('[');
+        final Iterator<T> iterator = reverseIterator();
+        while (iterator.hasNext()) {
+            builder.append(iterator.next());
+            if (iterator.hasNext()) {
+                builder.append(", ");
+            }
+        }
+        builder.append(']');
+        return builder.toString();
+    }
 }

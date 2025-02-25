@@ -1439,4 +1439,16 @@ public class DoublyLinkedListTest {
         assertTrue(linkedList.isEmpty());
         assertEquals(0, linkedList.removeAll(element2));
     }
+
+    @Test
+    public void testToReverseString() {
+        final DoublyLinkedList<String> linkedList = new DoublyLinkedList<>();
+        linkedList.add("1");
+        linkedList.add("2");
+        linkedList.add("1");
+        linkedList.add("b");
+        linkedList.add("3");
+        linkedList.add("a");
+        assertEquals("[a, 3, b, 1, 2, 1]", linkedList.toReverseString());
+    }
 }
