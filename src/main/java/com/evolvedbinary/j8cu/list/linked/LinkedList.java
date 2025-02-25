@@ -74,6 +74,8 @@ public interface LinkedList<T> extends Iterable<T> {
      * Returns true if the list contains an element
      * with the same identity as the provided element
      *
+     * @param element the element to search for.
+     *
      * @return true if the list contains an element with the same identity, false otherwise.
      */
     boolean containsIdentity(@Nullable T element);
@@ -81,6 +83,8 @@ public interface LinkedList<T> extends Iterable<T> {
     /**
      * Returns true if the list contains an element
      * with the same equality as the provided element
+     *
+     * @param element the element to search for.
      *
      * @return true if the list contains an element with the same equality, false otherwise.
      */
