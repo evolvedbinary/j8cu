@@ -133,6 +133,44 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> implements B
     }
 
     @Override
+    public @Nullable T get(final long index) {
+        if (isEmpty()) {
+            throw new IndexOutOfBoundsException("List is empty");
+        }
+
+        if (index < 0 || index > size - 1) {
+            throw new IndexOutOfBoundsException("Requested index was: " + index + ", but indexable range is 0 to: " + (size - 1));
+        }
+
+        // optimisation for head
+        if (index == 0) {
+            return underlyingList.head.data;
+        }
+
+        // optimisation for last
+        if (index == size - 1) {
+            return underlyingList.last.data;
+        }
+
+        DoublyLinkedNode<T> node;
+        // should we iterate forward or backward?
+        if (index < size / 2) {
+            // iterate forward
+            node = underlyingList.head;
+            for (long i = 1; i <= index; i++) {
+                node = node.next;
+            }
+        } else {
+            // iterate backward
+            node = underlyingList.last;
+            for (long i = size - 2; i >= index; i--) {
+                node = node.previous;
+            }
+        }
+        return node.data;
+    }
+
+    @Override
     protected long remove(@Nullable final T element, final RemovalMode removalMode) {
         final long removed = underlyingList.remove(element, removalMode);
         this.size -= removed;

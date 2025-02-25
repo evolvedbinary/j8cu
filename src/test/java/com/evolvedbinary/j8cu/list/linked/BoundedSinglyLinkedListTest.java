@@ -125,6 +125,30 @@ public class BoundedSinglyLinkedListTest {
 
     @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
     @ParameterizedTest
+    public void get(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        final int maximumSize = 5;
+
+        BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> linkedList.get(0));
+        assertThrows(IndexOutOfBoundsException.class, () -> linkedList.get(100));
+
+        linkedList.add("a");
+        linkedList.add("b");
+        linkedList.add("c");
+        linkedList.add("d");
+        linkedList.add("e");
+
+        assertEquals("a", linkedList.get(0));
+        assertEquals("e", linkedList.get(4));
+        assertEquals("b", linkedList.get(1));
+        assertEquals("d", linkedList.get(3));
+        assertEquals("c", linkedList.get(2));
+        assertThrows(IndexOutOfBoundsException.class, () -> linkedList.get(5));
+    }
+
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
     public void removeFirst(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final int maximumSize = 5;
 

@@ -126,6 +126,34 @@ public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> implements B
     }
 
     @Override
+    public @Nullable T get(final long index) {
+        if (isEmpty()) {
+            throw new IndexOutOfBoundsException("List is empty");
+        }
+
+        if (index < 0 || index > size - 1) {
+            throw new IndexOutOfBoundsException("Requested index was: " + index + ", but indexable range is 0 to: " + (size - 1));
+        }
+
+        // optimisation for head
+        if (index == 0) {
+            return underlyingList.head.data;
+        }
+
+        // optimisation for last
+        if (index == size - 1) {
+            return underlyingList.last.data;
+        }
+
+        // iterate forward
+        SinglyLinkedNode<T> node = underlyingList.head;
+        for (int i = 1; i <= index; i ++) {
+            node = node.next;
+        }
+        return node.data;
+    }
+
+    @Override
     protected long remove(@Nullable final T element, final RemovalMode removalMode) {
         final long removed = underlyingList.remove(element, removalMode);
         this.size -= removed;

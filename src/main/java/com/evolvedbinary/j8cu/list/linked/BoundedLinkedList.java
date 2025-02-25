@@ -26,6 +26,8 @@
  */
 package com.evolvedbinary.j8cu.list.linked;
 
+import org.jspecify.annotations.Nullable;
+
 public interface BoundedLinkedList<T> extends LinkedList<T> {
 
     /**
@@ -41,4 +43,15 @@ public interface BoundedLinkedList<T> extends LinkedList<T> {
      * @return the size of the linked list.
      */
     long size();
+
+    /**
+     * Get an element from the list.
+     *
+     * @param index the index of the element within the list.
+     *
+     * @return the value of the element.
+     *
+     * @throws IndexOutOfBoundsException if the index is less than zero, or greater than {@code size() - 1}.
+     */
+    @Nullable T get(long index);
 }
