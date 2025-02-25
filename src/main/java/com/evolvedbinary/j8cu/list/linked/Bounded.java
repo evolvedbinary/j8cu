@@ -26,27 +26,32 @@
  */
 package com.evolvedbinary.j8cu.list.linked;
 
-import java.util.Arrays;
+/**
+ * Utilities for bounding the size of linked lists.
+ *
+ * @author <a href="mailto:adam@evolvedbinary.com">Adam Retter</a>
+ */
+public class Bounded {
 
-class LinkedListTestUtil {
-
-    static <T extends Comparable<T>> void addAll(final LinkedList<T> linkedList, final T[] values) {
-        for (final T v : values) {
-            linkedList.add(v);
-        }
+    /**
+     * Wraps a singly linked list with an upper bound on its size.
+     *
+     * @param maximumSize sets an upper bound on the size of the list.
+     *
+     * @return the bounded list.
+     */
+    static <T> BoundedSinglyLinkedList<T> bound(final SinglyLinkedList<T> singlyLinkedList, final long maximumSize) {
+        return new BoundedSinglyLinkedList<>(singlyLinkedList, maximumSize);
     }
 
-    static Integer[] toIntegerArray(final LinkedList<Integer> linkedList) {
-        Integer[] elements = new Integer[0];
-        int i = 0;
-        for (final Integer element : linkedList) {
-            elements = Arrays.copyOf(elements, elements.length + 1);
-            elements[i++] = element;
-        }
-        return elements;
-    }
-
-    static <T, L extends LinkedList<T>> L newList(final Class<L> listClass) throws InstantiationException, IllegalAccessException {
-        return listClass.newInstance();
+    /**
+     * Wraps a doubly linked list with an upper bound on its size.
+     *
+     * @param maximumSize sets an upper bound on the size of the list.
+     *
+     * @return the bounded list.
+     */
+    static <T> BoundedDoublyLinkedList<T> bound(final DoublyLinkedList<T> doublyLinkedList, final long maximumSize) {
+        return new BoundedDoublyLinkedList<>(doublyLinkedList, maximumSize);
     }
 }

@@ -29,6 +29,8 @@ package com.evolvedbinary.j8cu.list.linked;
 import net.jcip.annotations.NotThreadSafe;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Iterator;
+
 /**
  * Basic Linked List implementation where nodes have a `next` link,
  * and the list has a bounded size.
@@ -37,6 +39,11 @@ import org.jspecify.annotations.Nullable;
  */
 @NotThreadSafe
 public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> implements BoundedLinkedList<T> {
+
+    /**
+     * The underlying list on which we are imposing a size bound.
+     */
+    final SinglyLinkedList<T> underlyingList;
 
     /**
      * An upper bound on the size of the Linked List.
@@ -50,18 +57,11 @@ public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> implements B
     long size;
 
     /**
+     * @param underlyingList the list to place a size limit on.
      * @param maximumSize sets an upper bound on the size of the Linked List.
      */
-    public BoundedSinglyLinkedList(final long maximumSize) {
-        this(maximumSize, 0);
-    }
-
-    /**
-     * @param maximumSize sets an upper bound on the size of the Linked List.
-     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
-     */
-    public BoundedSinglyLinkedList(final long maximumSize, final int nodeCacheSize) {
-        super(nodeCacheSize);
+    BoundedSinglyLinkedList(final SinglyLinkedList<T> underlyingList, final long maximumSize) {
+        this.underlyingList = underlyingList;
         if (maximumSize < 1) {
             throw new IllegalArgumentException("maximumSize must be a greater than 0");
         }
@@ -88,7 +88,7 @@ public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> implements B
      */
     @Override
     public boolean add(@Nullable final T element) {
-        if (!isFull() && super.add(element)) {
+        if (!isFull() && underlyingList.add(element)) {
             this.size++;
             return true;
         }
@@ -96,33 +96,50 @@ public class BoundedSinglyLinkedList<T> extends SinglyLinkedList<T> implements B
     }
 
     @Override
-    public boolean removeFirst(final @Nullable T element) {
-        if (super.removeFirst(element)) {
-            this.size--;
-            return true;
-        }
-        return false;
+    public boolean isEmpty() {
+        return underlyingList.isEmpty();
     }
 
     @Override
-    public boolean removeOne(final @Nullable T element) {
-        if (super.removeOne(element)) {
-            this.size--;
-            return true;
-        }
-        return false;
+    public @Nullable T head() {
+        return underlyingList.head();
     }
 
     @Override
-    public long removeAll(final @Nullable T element) {
-        final long removed = super.removeAll(element);
+    public @Nullable T last() {
+        return underlyingList.last();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return underlyingList.iterator();
+    }
+
+    @Override
+    public boolean containsIdentity(@Nullable T element) {
+        return underlyingList.containsIdentity(element);
+    }
+
+    @Override
+    public boolean containsEquivalent(@Nullable T element) {
+        return underlyingList.containsEquivalent(element);
+    }
+
+    @Override
+    protected long remove(@Nullable final T element, final RemovalMode removalMode) {
+        final long removed = underlyingList.remove(element, removalMode);
         this.size -= removed;
         return removed;
     }
 
     @Override
     public void clear() {
-        super.clear();
+        underlyingList.clear();
         this.size = 0;
+    }
+
+    @Override
+    public String toString() {
+        return underlyingList.toString();
     }
 }

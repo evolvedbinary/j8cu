@@ -26,8 +26,11 @@
  */
 package com.evolvedbinary.j8cu.list.linked;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
+import static com.evolvedbinary.j8cu.list.linked.Bounded.bound;
+import static com.evolvedbinary.j8cu.list.linked.LinkedListTestUtil.newList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -37,29 +40,31 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class BoundedSinglyLinkedListTest {
 
-    @Test
-    public void create() {
-        assertThrows(IllegalArgumentException.class, () -> new BoundedSinglyLinkedList<>(0));
-        assertThrows(IllegalArgumentException.class, () -> new BoundedSinglyLinkedList<>(-1));
-        assertThrows(IllegalArgumentException.class, () -> new BoundedSinglyLinkedList<>(-2));
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void create(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
+        assertThrows(IllegalArgumentException.class, () -> Bounded.bound(newList(underlyingListClass), 0));
+        assertThrows(IllegalArgumentException.class, () -> Bounded.bound(newList(underlyingListClass), -1));
+        assertThrows(IllegalArgumentException.class, () -> Bounded.bound(newList(underlyingListClass), -2));
 
         int maximumSize = 1;
-        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertEquals(maximumSize, linkedList.maximumSize);
         assertEquals(0, linkedList.size);
         assertTrue(linkedList.isEmpty());
 
         maximumSize = 1024;
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertEquals(maximumSize, linkedList.maximumSize);
         assertEquals(0, linkedList.size);
         assertTrue(linkedList.isEmpty());
     }
 
-    @Test
-    public void isFull() {
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void isFull(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final String element1 = "element1";
-        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(5);
+        BoundedSinglyLinkedList<String> linkedList =  Bounded.bound(newList(underlyingListClass), 5);
         assertFalse(linkedList.isFull());
         linkedList.add(element1);
         assertFalse(linkedList.isFull());
@@ -76,7 +81,7 @@ public class BoundedSinglyLinkedListTest {
         final String element3 = "element3";
         final String element4 = "element4";
         final String element5 = "element5";
-        linkedList = new BoundedSinglyLinkedList<>(5);
+        linkedList =  Bounded.bound(newList(underlyingListClass), 5);
         assertFalse(linkedList.isFull());
         linkedList.add(element1);
         assertFalse(linkedList.isFull());
@@ -90,12 +95,13 @@ public class BoundedSinglyLinkedListTest {
         assertTrue(linkedList.isFull());
     }
 
-    @Test
-    public void add() {
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void add(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final String element1 = "element1";
 
         int maximumSize = 1;
-        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertTrue(linkedList.isEmpty());
         assertTrue(linkedList.add(element1));
         assertEquals(1, linkedList.size());
@@ -104,7 +110,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         maximumSize = 3;
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertTrue(linkedList.isEmpty());
         assertTrue(linkedList.add(element1));
         assertEquals(1, linkedList.size());
@@ -117,19 +123,20 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(3, linkedList.size());
     }
 
-    @Test
-    public void removeFirst() {
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void removeFirst(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final int maximumSize = 5;
 
         // empty list
-        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertEquals(0, linkedList.size());
         final String noSuchElement = "no-such-element";
         assertFalse(linkedList.removeFirst(noSuchElement));
         assertEquals(0, linkedList.size());
 
         // list with one element
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         final String element1 = "element1";
         linkedList.add(element1);
         assertEquals(1, linkedList.size());
@@ -141,7 +148,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with two elements the same, remove just the first of the two
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         assertEquals(2, linkedList.size());
@@ -149,7 +156,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two elements the same, remove both
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         assertEquals(2, linkedList.size());
@@ -163,7 +170,7 @@ public class BoundedSinglyLinkedListTest {
 
         // list with two different elements, remove just the first of the two
         final String element2 = "element2";
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -171,7 +178,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two different elements, remove just the second of the two
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -179,7 +186,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two different elements, remove both (first then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -194,7 +201,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with two different elements, remove both (second then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -209,7 +216,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three elements the same, remove just the first of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         linkedList.add(element1);
@@ -218,7 +225,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three elements the same, remove all
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         linkedList.add(element1);
@@ -235,7 +242,7 @@ public class BoundedSinglyLinkedListTest {
 
         // list with three different elements, remove just the first of the three
         final String element3 = "element3";
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -244,7 +251,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove just the second of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -253,7 +260,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove just the third of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -262,7 +269,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove two (first then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -273,7 +280,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (second then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -284,7 +291,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (first then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -295,7 +302,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (third then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -306,7 +313,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (third then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -317,7 +324,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove all (first, second, then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -338,7 +345,7 @@ public class BoundedSinglyLinkedListTest {
         assertTrue(linkedList.isEmpty());
 
         // list with three different elements, remove all (second, third, then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -358,7 +365,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (third, first, then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -378,7 +385,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (third, second, then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -398,19 +405,20 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
     }
 
-    @Test
-    public void removeOne() {
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void removeOne(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final int maximumSize = 5;
 
         // empty list
-        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertEquals(0, linkedList.size());
         final String noSuchElement = "no-such-element";
         assertFalse(linkedList.removeOne(noSuchElement));
         assertEquals(0, linkedList.size());
 
         // list with one element
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         final String element1 = "element1";
         linkedList.add(element1);
         assertEquals(1, linkedList.size());
@@ -422,7 +430,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with two elements the same, remove just the first of the two
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         assertEquals(2, linkedList.size());
@@ -430,7 +438,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two elements the same, remove both
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         assertEquals(2, linkedList.size());
@@ -444,7 +452,7 @@ public class BoundedSinglyLinkedListTest {
 
         // list with two different elements, remove just the first of the two
         final String element2 = "element2";
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -452,7 +460,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two different elements, remove just the second of the two
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -460,7 +468,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two different elements, remove both (first then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -475,7 +483,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with two different elements, remove both (second then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -490,7 +498,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three elements the same, remove just the first of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         linkedList.add(element1);
@@ -499,7 +507,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three elements the same, remove all
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         linkedList.add(element1);
@@ -516,7 +524,7 @@ public class BoundedSinglyLinkedListTest {
 
         // list with three different elements, remove just the first of the three
         final String element3 = "element3";
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -525,7 +533,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove just the second of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -534,7 +542,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove just the third of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -543,7 +551,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove two (first then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -554,7 +562,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (second then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -565,7 +573,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (first then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -576,7 +584,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (third then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -587,7 +595,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (third then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -598,7 +606,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove all (first, second, then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -619,7 +627,7 @@ public class BoundedSinglyLinkedListTest {
         assertTrue(linkedList.isEmpty());
 
         // list with three different elements, remove all (second, third, then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -639,7 +647,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (third, first, then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -659,7 +667,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (third, second, then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -679,19 +687,20 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
     }
 
-    @Test
-    public void removeAll() {
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void removeAll(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final int maximumSize = 10;
 
         // empty list
-        BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         assertEquals(0, linkedList.size());
         final String noSuchElement = "no-such-element";
         assertEquals(0, linkedList.removeAll(noSuchElement));
         assertEquals(0, linkedList.size());
 
         // list with one element
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         final String element1 = "element1";
         linkedList.add(element1);
         assertEquals(1, linkedList.size());
@@ -704,7 +713,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with two elements the same, remove both
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         assertEquals(2, linkedList.size());
@@ -716,7 +725,7 @@ public class BoundedSinglyLinkedListTest {
 
         // list with two different elements, remove just the first of the two
         final String element2 = "element2";
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -724,7 +733,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two different elements, remove just the second of the two
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -732,7 +741,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with two different elements, remove both (first then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -747,7 +756,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with two different elements, remove both (second then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         assertEquals(2, linkedList.size());
@@ -762,7 +771,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three elements the same, remove all
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         linkedList.add(element1);
@@ -775,7 +784,7 @@ public class BoundedSinglyLinkedListTest {
 
         // list with three different elements, remove just the first of the three
         final String element3 = "element3";
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -784,7 +793,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove just the second of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -793,7 +802,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove just the third of the three
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -802,7 +811,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(2, linkedList.size());
 
         // list with three different elements, remove two (first then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -813,7 +822,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (second then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -824,7 +833,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (first then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -835,7 +844,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (third then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -846,7 +855,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove two (third then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -857,7 +866,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(1, linkedList.size());
 
         // list with three different elements, remove all (first, second, then third)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -877,7 +886,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (second, third, then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -897,7 +906,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (third, first, then second)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -917,7 +926,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with three different elements, remove all (third, second, then first)
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element2);
         linkedList.add(element3);
@@ -937,7 +946,7 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
 
         // list with variety of elements
-        linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
         linkedList.add(element1);
         linkedList.add(element1);
         linkedList.add(element2);
@@ -963,10 +972,11 @@ public class BoundedSinglyLinkedListTest {
         assertEquals(0, linkedList.size());
     }
 
-    @Test
-    public void clear() {
+    @ValueSource(classes = {SinglyLinkedList.class, OrderedSinglyLinkedList.class})
+    @ParameterizedTest
+    public void clear(final Class<? extends SinglyLinkedList<String>> underlyingListClass) throws InstantiationException, IllegalAccessException {
         final int maximumSize = 10;
-        final BoundedSinglyLinkedList<String> linkedList = new BoundedSinglyLinkedList<>(maximumSize);
+        final BoundedSinglyLinkedList<String> linkedList = Bounded.bound(newList(underlyingListClass), maximumSize);
 
         linkedList.add("hello");
         assertEquals(1, linkedList.size());

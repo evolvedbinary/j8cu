@@ -29,6 +29,8 @@ package com.evolvedbinary.j8cu.list.linked;
 import net.jcip.annotations.NotThreadSafe;
 import org.jspecify.annotations.Nullable;
 
+import java.util.Iterator;
+
 /**
  * Basic Linked List implementation where nodes have `next` and `prev` links,
  * and the list has a bounded size.
@@ -39,6 +41,11 @@ import org.jspecify.annotations.Nullable;
 public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> implements BoundedLinkedList<T> {
 
     // TODO(AR) could perhaps be optimised to use its `size` to perform a binary search when removing elements or checking for contains elements, furthermore if we had an OrderedBoundedDoublyLinkedList we could use a binary search for finding the insertion position when adding elements too!
+
+    /**
+     * The underlying list on which we are imposing a size bound.
+     */
+    final DoublyLinkedList<T> underlyingList;
 
     /**
      * An upper bound on the size of the Linked List.
@@ -52,18 +59,11 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> implements B
     long size;
 
     /**
+     * @param underlyingList the list to place a size limit on.
      * @param maximumSize sets an upper bound on the size of the Linked List.
      */
-    public BoundedDoublyLinkedList(final long maximumSize) {
-        this(maximumSize, 0);
-    }
-
-    /**
-     * @param maximumSize sets an upper bound on the size of the Linked List.
-     * @param nodeCacheSize the size of the cache to use for reusing nodes that are removed.
-     */
-    public BoundedDoublyLinkedList(final long maximumSize, final int nodeCacheSize) {
-        super(nodeCacheSize);
+    public BoundedDoublyLinkedList(final DoublyLinkedList<T> underlyingList, final long maximumSize) {
+        this.underlyingList = underlyingList;
         if (maximumSize < 1) {
             throw new IllegalArgumentException("maximumSize must be a greater than 0");
         }
@@ -90,7 +90,7 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> implements B
      */
     @Override
     public boolean add(@Nullable final T element) {
-        if (!isFull() && super.add(element)) {
+        if (!isFull() && underlyingList.add(element)) {
             this.size++;
             return true;
         }
@@ -98,33 +98,60 @@ public class BoundedDoublyLinkedList<T> extends DoublyLinkedList<T> implements B
     }
 
     @Override
-    public boolean removeFirst(final @Nullable T element) {
-        if (super.removeFirst(element)) {
-            this.size--;
-            return true;
-        }
-        return false;
+    public boolean isEmpty() {
+        return underlyingList.isEmpty();
     }
 
     @Override
-    public boolean removeOne(final @Nullable T element) {
-        if (super.removeOne(element)) {
-            this.size--;
-            return true;
-        }
-        return false;
+    public @Nullable T head() {
+        return underlyingList.head();
     }
 
     @Override
-    public long removeAll(final @Nullable T element) {
-        final long removed = super.removeAll(element);
+    public @Nullable T last() {
+        return underlyingList.last();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return underlyingList.iterator();
+    }
+
+    @Override
+    public Iterator<T> reverseIterator() {
+        return underlyingList.reverseIterator();
+    }
+
+    @Override
+    public boolean containsIdentity(@Nullable T element) {
+        return underlyingList.containsIdentity(element);
+    }
+
+    @Override
+    public boolean containsEquivalent(@Nullable T element) {
+        return underlyingList.containsEquivalent(element);
+    }
+
+    @Override
+    protected long remove(@Nullable final T element, final RemovalMode removalMode) {
+        final long removed = underlyingList.remove(element, removalMode);
         this.size -= removed;
         return removed;
     }
 
     @Override
     public void clear() {
-        super.clear();
+        underlyingList.clear();
         this.size = 0;
+    }
+
+    @Override
+    public String toString() {
+        return underlyingList.toString();
+    }
+
+    @Override
+    public String toReverseString() {
+        return underlyingList.toReverseString();
     }
 }
