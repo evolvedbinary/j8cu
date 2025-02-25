@@ -10,7 +10,7 @@
 
     <groupId>com.evolvedbinary.j8cu</groupId>
     <artifactId>j8cu</artifactId>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.1.0</version>
 
     <name>Java 8 Collection Utilities</name>
     <description>Collection Utilities for Java 8</description>
@@ -41,7 +41,7 @@
         <connection>scm:git:https://github.com/evolvedbinary/j8cu.git</connection>
         <developerConnection>scm:git:https://github.com/evolvedbinary/j8cu.git</developerConnection>
         <url>scm:git:https://github.com/evolvedbinary/j8cu.git</url>
-        <tag>HEAD</tag>
+        <tag>2.1.0</tag>
     </scm>
 
     <properties>
