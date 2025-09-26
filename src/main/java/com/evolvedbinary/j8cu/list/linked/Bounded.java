@@ -36,6 +36,7 @@ public interface Bounded {
     /**
      * Wraps a singly linked list with an upper bound on its size.
      *
+     * @param <T> the type of elements in the list.
      * @param maximumSize sets an upper bound on the size of the list.
      *
      * @return the bounded list.
@@ -47,6 +48,7 @@ public interface Bounded {
     /**
      * Wraps a doubly linked list with an upper bound on its size.
      *
+     * @param <T> the type of elements in the list.
      * @param maximumSize sets an upper bound on the size of the list.
      *
      * @return the bounded list.
